@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Murecho:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(30, 30, 45, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #06ffa4 0%, #2fff6a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .template-preview {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #252538;
+            border-radius: 12px;
+            border: 2px solid #33334d;
+        }
+
+        .template-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .template-label {
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.3em;
+            border: 3px solid #33334d;
+            border-radius: 12px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            font-family: 'Murecho', sans-serif;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: #252538;
+            color: #fff;
+        }
+
+        input[type="text"]::placeholder {
+            color: #666;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #06ffa4;
+            box-shadow: 0 0 0 4px rgba(6, 255, 164, 0.1);
+        }
+
+        input[type="text"].error {
+            border-color: #e74c3c;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .char-count {
+            margin-top: 8px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .char-count.warning {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #5bc6f8 0%, #000000 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(91, 198, 248, 0.4);
+            font-family: 'Murecho', sans-serif;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(91, 198, 248, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .generate-btn {
+            padding: 18px 60px;
+            font-size: 1.4em;
+            background: linear-gradient(135deg, #06ffa4 0%, #00d4ff 100%);
+            box-shadow: 0 6px 20px rgba(6, 255, 164, 0.4);
+        }
+
+        .generate-btn:hover {
+            box-shadow: 0 8px 25px rgba(6, 255, 164, 0.6);
+        }
+
+        .whatsapp-btn {
+            margin-top: 12px;
+            padding: 10px 30px;
+            font-size: 0.9em;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            box-shadow: 0 3px 12px rgba(37, 211, 102, 0.4);
+        }
+
+        .whatsapp-btn:hover {
+            box-shadow: 0 5px 18px rgba(37, 211, 102, 0.6);
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .canvas-container {
+            margin-top: 30px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .canvas-container.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        canvas {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .download-btn {
+            margin-top: 20px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #33334d;
+        }
+
+        .feature {
+            padding: 15px;
+            background: #252538;
+            border-radius: 10px;
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .feature-text {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #33334d;
+            border-top: 4px solid #06ffa4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .color-options {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: #fff;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #33334d;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Akith Logo Generator</h1>
+        <p class="subtitle">Create stunning logos in seconds</p>
+
+        <div class="template-preview">
+            <img src="template.png" alt="Template" id="templatePreview">
+            <div class="template-label">logo</div>
+        </div>
+
+        <div class="input-group">
+            <label for="nameInput">Enter Your Name</label>
+            <input type="text" id="nameInput" placeholder="YOUR NAME" maxlength="6">
+            <div class="char-count" id="charCount">0 / 6 characters</div>
+        </div>
+
+        <div class="color-options">
+            <div class="color-option active" style="background: #11deed" data-color="#11deed" title="Cyan"></div>
+            <div class="color-option" style="background: #ff6b6b" data-color="#ff6b6b" title="Red"></div>
+            <div class="color-option" style="background: #4ecdc4" data-color="#4ecdc4" title="Teal"></div>
+            <div class="color-option" style="background: #ffe66d" data-color="#ffe66d" title="Yellow"></div>
+            <div class="color-option" style="background: #a8e6cf" data-color="#a8e6cf" title="Mint"></div>
+            <div class="color-option" style="background: #ff8b94" data-color="#ff8b94" title="Pink"></div>
+            <div class="color-option" style="background: #c7ceea" data-color="#c7ceea" title="Lavender"></div>
+            <div class="color-option" style="background: #ffd93d" data-color="#ffd93d" title="Gold"></div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn generate-btn" id="generateBtn">Generate Logo</button>
+            <a href="https://whatsapp.com/channel/0029VaimNV6EQIamcXURzt0D" target="_blank" class="btn whatsapp-btn">🚀 Join WhatsApp Channel</a>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #888;">Generating your logo...</p>
+        </div>
+
+        <div class="canvas-container" id="canvasContainer">
+            <canvas id="logoCanvas"></canvas>
+            <br>
+            <button class="btn download-btn" id="downloadBtn">Download Logo</button>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-text">Instant Auto Generate</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⭐</div>
+                <div class="feature-text">Custom Colors</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">✅</div>
+                <div class="feature-text">Free Download</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2026 Akith Creations Free Logo. All rights reserved
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const nameInput = document.getElementById('nameInput');
+        const charCount = document.getElementById('charCount');
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const canvas = document.getElementById('logoCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const loading = document.getElementById('loading');
+        const colorOptions = document.querySelectorAll('.color-option');
+
+        // State
+        let templateImage = new Image();
+        let selectedOutlineColor = '#11deed';
+
+        // Load template image
+        templateImage.src = 'template.png';
+        templateImage.crossOrigin = 'anonymous';
+        
+        templateImage.onload = () => {
+            console.log('Template loaded successfully');
+        };
+
+        templateImage.onerror = () => {
+            console.error('Failed to load template');
+            // Fallback to a colored background if template fails to load
+            templateImage = createFallbackTemplate();
+        };
+
+        // Fallback template if image fails
+        function createFallbackTemplate() {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 800;
+            tempCanvas.height = 800;
+            const tempCtx = tempCanvas.getContext('2d');
+
+            const gradient = tempCtx.createLinearGradient(0, 0, 800, 800);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(0.5, '#764ba2');
+            gradient.addColorStop(1, '#f093fb');
+            tempCtx.fillStyle = gradient;
+            tempCtx.fillRect(0, 0, 800, 800);
+
+            const img = new Image();
+            img.src = tempCanvas.toDataURL();
+            return img;
+        }
+
+        // Character count
+        nameInput.addEventListener('input', (e) => {
+            const len = e.target.value.length;
+            charCount.textContent = `${len} / 6 characters`;
+            
+            if (len > 6) {
+                charCount.classList.add('warning');
+                nameInput.classList.add('error');
+            } else {
+                charCount.classList.remove('warning');
+                nameInput.classList.remove('error');
+            }
+        });
+
+        // Color selection
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                colorOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                selectedOutlineColor = option.dataset.color;
+            });
+        });
+
+        // Generate logo
+        generateBtn.addEventListener('click', () => {
+            const name = nameInput.value.trim().toUpperCase();
+            
+            if (!name) {
+                nameInput.classList.add('error');
+                setTimeout(() => nameInput.classList.remove('error'), 500);
+                return;
+            }
+
+            if (name.length > 6) {
+                alert('Name must be 6 characters or less!');
+                return;
+            }
+
+            // Show loading
+            loading.classList.add('show');
+            canvasContainer.classList.remove('show');
+            generateBtn.disabled = true;
+
+            // Small delay for visual feedback
+            setTimeout(() => {
+                generateLogo(name);
+                loading.classList.remove('show');
+                canvasContainer.classList.add('show');
+                generateBtn.disabled = false;
+                
+                // Scroll to result
+                canvasContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 500);
+        });
+
+        function generateLogo(name) {
+            // Set canvas size to match template
+            canvas.width = templateImage.width || 800;
+            canvas.height = templateImage.height || 800;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw template
+            ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+         // Text settings - FONT_SIZE = int(IMG_H * 0.20)
+            const fontSize = Math.floor(canvas.height * 0.20);
+            ctx.font = `bold ${fontSize}px 'Murecho', sans-serif`; // Changed 400 to bold
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = `650 ${fontSize}px 'Murecho', sans-serif`;
+
+            // Measure text
+            const metrics = ctx.measureText(name);
+            const textWidth = metrics.width;
+            const textHeight = fontSize;
+
+            // Position (centered horizontally, bottom area like original bot)
+            const x = canvas.width / 2;
+            const y = canvas.height - (textHeight / 2) - (canvas.height * 0.10);
+
+            // Draw outline/stroke (multiple passes for thickness)
+            const strokeWidth = Math.max(2, Math.floor(fontSize * 0.015));
+            ctx.fillStyle = selectedOutlineColor;
+            
+            for (let dx = -strokeWidth; dx <= strokeWidth; dx++) {
+                for (let dy = -strokeWidth; dy <= strokeWidth; dy++) {
+                    if (dx !== 0 || dy !== 0) {
+                        ctx.fillText(name, x + dx, y + dy);
+                    }
+                }
+            }
+
+            // Draw main text
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(name, x, y);
+
+            // Add subtle shadow
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 5;
+            ctx.shadowOffsetY = 5;
+            ctx.fillText(name, x, y);
+            ctx.shadowColor = 'transparent';
+        }
+
+        // Download logo
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `logo-${nameInput.value.trim().toUpperCase() || 'generated'}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+
+        // Enter key support
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                generateBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
